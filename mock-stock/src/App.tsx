@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 
-function SearchBar({filterText, inStockOnly}: any){
+function SearchBar({filterText, inStockOnly, onFilterTextChange, onInStockOnlyChange}: any){
   return(
     <form id='form-search' name='for-search'>
       <label htmlFor='search_bar'>Search</label><br/>
@@ -10,6 +10,7 @@ function SearchBar({filterText, inStockOnly}: any){
         id='search_bar'
         name='search_bar'
         value={filterText}
+        onChange={(e) => onFilterTextChange(e.target.value)} // e.target gets the element
       />
       <input id='submit' type='submit' value='submit'></input>
       <br/> <br/>
@@ -18,6 +19,7 @@ function SearchBar({filterText, inStockOnly}: any){
         id='in_stock'
         name='in_stock'
         checked={inStockOnly}
+        onChange={(e) => onInStockOnlyChange(e.target.checked)}
       />
       <label htmlFor='in_stock'> Only show product in stock</label>
     </form>
@@ -106,6 +108,8 @@ function FilteredProductTable({products} : any){
       <SearchBar
         filterText={filterText}
         inStockOnly={inStockOnly}
+        onFilterTextChange={setFilterText}
+        onInStockOnlyChange={setInStockOnly}
       />
       <br/><br/>
       <ProductTable
