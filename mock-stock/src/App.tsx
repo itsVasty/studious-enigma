@@ -1,14 +1,24 @@
 import { useState } from 'react'
 import './App.css'
 
-function SearchBar(){
+function SearchBar({filterText, inStockOnly}: any){
   return(
     <form id='form-search' name='for-search'>
       <label htmlFor='search_bar'>Search</label><br/>
-      <input type='text' id='search_bar' name='search_bar'></input>
+      <input
+        type='text'
+        id='search_bar'
+        name='search_bar'
+        value={filterText}
+      />
       <input id='submit' type='submit' value='submit'></input>
       <br/> <br/>
-      <input type='checkbox' id='in_stock' name='in_stock'></input>
+      <input
+        type='checkbox'
+        id='in_stock'
+        name='in_stock'
+        checked={inStockOnly}
+      />
       <label htmlFor='in_stock'> Only show product in stock</label>
     </form>
   )
@@ -38,11 +48,27 @@ function ProductRow({product} : any){
   )
 }
 
-function ProductTable({products} : any){
-  const rows : any= []
-  let lastCategory : any= null
+function ProductTable({products, filterText, inStockOnly} : any){
+  const rows : any = []
+  let lastCategory : any = null
 
   products.forEach((product : any) => {
+    // filtering based on text
+    if (
+      product.name.toLowerCase().indexOf(
+        filterText.toLowerCase()
+      ) === -1
+    ){
+      return
+    }
+
+    //filtering based on checkbox
+    if(
+      inStockOnly && !product.stocked
+    ){
+      return
+    }
+
     if (product.category !== lastCategory){
       rows.push(
         <ProductCategoryRow
@@ -77,9 +103,16 @@ function FilteredProductTable({products} : any){
   
   return(
     <>
-      <SearchBar/>
+      <SearchBar
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+      />
       <br/><br/>
-      <ProductTable products={products}/>
+      <ProductTable
+        filterText={filterText}
+        inStockOnly={inStockOnly} 
+        products={products}
+      />
     </>
   )
 }
